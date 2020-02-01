@@ -3,7 +3,7 @@ from threading import Thread
 
 import dbus.mainloop.glib
 from PySide2 import QtCore
-from PySide2.QtCore import Qt, QEvent, QEasingCurve, QRect, QPoint, QSize
+from PySide2.QtCore import Qt, QEvent, QEasingCurve, QRect, QPoint, QSize, QDir
 from PySide2.QtGui import QPixmap, QFontMetrics
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QDialog, QSlider, QLabel, QPushButton
@@ -20,7 +20,8 @@ def set_elided_text(label: QLabel, text: str):
 class Ui(QDialog):
     def __init__(self, application):
         super(Ui, self).__init__()
-        QUiLoader().load("../Resources/layout.ui", self)
+        QDir().setCurrent(str(Path(__file__).parent.parent))
+        QUiLoader().load("Resources/layout.ui", self)
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         self.application = application
 
