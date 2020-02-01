@@ -3,9 +3,14 @@ from sys import exit
 from PySide2.QtCore import Qt
 from PySide2.QtWidgets import QApplication
 
-from Code import Application
+from MusicOverlay import Application
 
-if __name__ == "__main__":
+
+def main():
     QApplication.setAttribute(Qt.ApplicationAttribute.AA_ShareOpenGLContexts)
     app = Application()
     exit(app.exec_())
+
+
+if __name__ == "__main__":
+    main()

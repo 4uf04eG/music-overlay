@@ -5,7 +5,7 @@ from PySide2.QtCore import Signal, QObject, QRect
 from PySide2.QtWidgets import QApplication
 from pynput.keyboard import Listener
 
-import Code
+import MusicOverlay
 
 """
 Pressing media buttons resets window hide timer.
@@ -40,7 +40,7 @@ class Application(QApplication):
         self.communicator.onPlayerReload.connect(self.load_any_player)
         Listener(on_press=self.handle_media_buttons_press, on_release=None).start()
 
-        self.window = Code.Ui(self)
+        self.window = MusicOverlay.Ui(self)
         self.load_any_player()
         self.window.show()
         self.window.saved_geometry = QRect(self.window.geometry())
@@ -77,16 +77,16 @@ class Application(QApplication):
         elif str(key) == '<269025044>':
             self.window.player_interface.PlayPause()
 
-    def select_first_whitelisted_player(self, player_info: list) -> Code.dbus_helper.PlayerInfo:
+    def select_first_whitelisted_player(self, player_info: list) -> MusicOverlay.dbus_helper.PlayerInfo:
         for player in reversed(player_info):
             cleared_name = player.service_name.replace('org.mpris.MediaPlayer2.', '')
 
             if cleared_name in self.whitelist and player.track_title != 'Unknown':
                 return player
 
-        return Code.dbus_helper.PlayerInfo()
+        return MusicOverlay.dbus_helper.PlayerInfo()
 
     def load_any_player(self):
-        all_players = Code.dbus_helper.get_all_players_info()
+        all_players = MusicOverlay.dbus_helper.get_all_players_info()
         whitelisted_player = self.select_first_whitelisted_player(all_players)
         self.window.set_player_info(whitelisted_player)

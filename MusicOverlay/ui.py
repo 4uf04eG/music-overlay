@@ -8,7 +8,7 @@ from PySide2.QtGui import QPixmap, QFontMetrics
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QDialog, QSlider, QLabel, QPushButton
 
-from Code.dbus_helper import *
+from MusicOverlay.dbus_helper import *
 
 
 def set_elided_text(label: QLabel, text: str):
@@ -20,7 +20,7 @@ def set_elided_text(label: QLabel, text: str):
 class Ui(QDialog):
     def __init__(self, application):
         super(Ui, self).__init__()
-        QUiLoader().load("Resources/layout.ui", self)
+        QUiLoader().load("../Resources/layout.ui", self)
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         self.application = application
 
