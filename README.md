@@ -1,9 +1,9 @@
 # Music overlay
-<img src='https://i.ibb.co/XYRsc3N/screenshot.png'>
+<img src='https://i.ibb.co/XYRsc3N/screenshot.png'><br>
 Small music overlay heavily inspired by the overlay available in Windows 10.
 It serves the same functionality and has two primary goals:<br>
     1. Bring that functionality to Linux<br>
-    2. Avoid browsers and other media players from being shown in overlay
+    2. Avoid browsers and other media players from being shown in overlay.
 Only you decide which media players to whitelist and which are not.
 
 ## Installation
@@ -19,11 +19,14 @@ Only you decide which media players to whitelist and which are not.
 ## Configuration
    After installation in hidden folder .config located in your home folder 
    you can find configuration file called music-overlay-config.
-   There are some settings:
-    | Fill lated | Fill later |
-    | ------------- | ------------- |
-    | Content Cell  | Content Cell  |
-    | Content Cell  | Content Cell  |
+
+   Parameter players_whitelist uses dbus player names. To get one for your application start music player and use:
+
+      dbus-send --session --dest=org.freedesktop.DBus --type=method_call --print-reply          
+      /org/freedesktop/DBus org.freedesktop.DBus.ListNames | grep org.mpris.MediaPlayer2
+   Result will show dbus names for running players where you can find the one you need.
+   
+   <b>Parameter enable_media_buttons_actions does not override system media shortcuts</b>. So either set it to false or remove system shortcuts.
    
 ## Usage
    Just open terminal and write command music-overlay to show overlay.
