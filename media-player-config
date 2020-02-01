@@ -1,0 +1,9 @@
+[app]
+players_whitelist = ['deezer', 'spotify', 'MellowPlayer3', 'GnomeMusic']
+enable_media_buttons_actions = true
+
+[window]
+pos_x = 120
+pos_y = 70
+opacity = 0.8
+
