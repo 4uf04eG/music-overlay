@@ -7,10 +7,10 @@ setup(name='music-overlay',
       description="Small overlay for managing music players",
       long_description=open('README.md').read(),
       long_description_content_type='text/markdown',
-      packages=['Code'],
+      packages=['MusicOverlay'],
       install_requires=['PySide2', 'pynput', 'toml'],
       license='LICENCE',
       entry_points={
-            'gui_scripts': ["music-overlay = Code.__main__:main"]
+            'gui_scripts': ["music-overlay = MusicOverlay.__main__:run"]
       }
 )

@@ -8,7 +8,7 @@ from PySide2.QtGui import QPixmap, QFontMetrics
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QDialog, QSlider, QLabel, QPushButton
 
-from Code.dbus_helper import *
+from MusicOverlay.dbus_helper import *
 
 
 def set_elided_text(label: QLabel, text: str):
