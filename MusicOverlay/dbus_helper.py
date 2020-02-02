@@ -10,7 +10,7 @@ class PlayerInfo:
     artist = "Unknown"
     playback_status = "Stopped"
     volume = 0.0
-    art_url = f'file://{str(Path().absolute())}/Resources/Images/no_cover.png'
+    art_url = ':/Images/no_cover.png'
 
     def set_data(
             self,

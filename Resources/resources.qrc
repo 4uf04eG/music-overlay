@@ -1,0 +1,14 @@
+<RCC>
+  <qresource>
+    <file>layout.ui</file>
+  </qresource>
+  <qresource>
+    <file>Images/prev_disabled.png</file>
+    <file>Images/prev.png</file>
+    <file>Images/play.png</file>
+    <file>Images/pause.png</file>
+    <file>Images/no_cover.png</file>
+    <file>Images/next_disabled.png</file>
+    <file>Images/next.png</file>
+  </qresource>
+</RCC>

@@ -3,7 +3,7 @@ from pathlib import Path
 import toml
 from PySide2.QtCore import Signal, QObject, QRect
 from PySide2.QtWidgets import QApplication
-from pynput.keyboard import Listener
+from pynput.keyboard import Listener, KeyCode
 
 import MusicOverlay
 
@@ -30,7 +30,10 @@ class Application(QApplication):
         super().__init__()
 
         self.whitelist = ['deezer', 'spotify', 'MellowPlayer3']
-        self.is_media_buttons_enabled = True
+        self.previous_shortcuts = ['<269025046>']
+        self.next_shortcuts = ['<269025047>']
+        self.play_pause_shortcuts = ['<269025044>']
+        self.all_shortcuts = self.previous_shortcuts + self.next_shortcuts + self.play_pause_shortcuts
         self.window_opacity = 0.8
         self.window_pos_x = 120
         self.window_pos_y = 70
@@ -38,7 +41,8 @@ class Application(QApplication):
 
         self.communicator = Communicator()
         self.communicator.onPlayerReload.connect(self.load_any_player)
-        Listener(on_press=self.handle_media_buttons_press, on_release=None).start()
+        self.current_keys_pressed = set()
+        Listener(on_press=self.on_key_press, on_release=self.on_key_release).start()
 
         self.window = MusicOverlay.Ui(self)
         self.load_any_player()
@@ -47,34 +51,54 @@ class Application(QApplication):
 
     def load_config(self):
         try:
-            config = toml.load(f"{Path.home()}/.config/media-player-config")
+            config = toml.load(f"{Path.home()}/.config/music-overlay-config")
             self.whitelist = config['app']['players_whitelist']
-            self.is_media_buttons_enabled = config['app']['enable_media_buttons_actions']
+
+            self.previous_shortcuts = [key.split('+') for key in config['shortcuts']['previous_keys']]
+            self.next_shortcuts = [key.split('+') for key in config['shortcuts']['next_keys']]
+            self.play_pause_shortcuts = [key.split('+') for key in config['shortcuts']['play_pause_keys']]
+            self.all_shortcuts = self.previous_shortcuts + self.next_shortcuts + self.play_pause_shortcuts
+
             self.window_pos_x = config['window']['pos_x']
             self.window_pos_y = config['window']['pos_y']
             self.window_opacity = config['window']['opacity']
         except (toml.decoder.TomlDecodeError, FileNotFoundError):
             pass
 
-    def handle_media_buttons_press(self, key):
-        # <269025046> - previous track, <269025047> - next track, <269025044> - play/pause
-        if str(key) == '<269025046>' or str(key) == '<269025047>' or str(key) == '<269025044>':
-            if not self.window.properties:
-                self.communicator.onPlayerReload.emit()
+    def on_key_press(self, key):
+        cleared_name = str(key).replace('Key.', '').replace('\'', '')
 
-            self.communicator.showWindow.emit()
-            self.communicator.resetHideTimer.emit()
+        if any([cleared_name in COMBO for COMBO in self.all_shortcuts]):
+            self.current_keys_pressed.add(cleared_name)
 
-        if not self.is_media_buttons_enabled \
-                or not self.window.properties \
-                or self.window.is_animation_started:
+            if any(all(k in self.current_keys_pressed for k in COMBO) for COMBO in self.next_shortcuts):
+                self.handle_media_buttons_press("next")
+            elif any(all(k in self.current_keys_pressed for k in COMBO) for COMBO in self.previous_shortcuts):
+                self.handle_media_buttons_press("prev")
+            elif any(all(k in self.current_keys_pressed for k in COMBO) for COMBO in self.play_pause_shortcuts):
+                self.handle_media_buttons_press("play_pause")
+
+    def on_key_release(self, key):
+        cleared_name = str(key).replace('Key.', '')
+
+        if any([cleared_name in COMBO for COMBO in self.all_shortcuts]):
+            self.current_keys_pressed.remove(cleared_name)
+
+    def handle_media_buttons_press(self, key: str):
+        if not self.window.properties:
+            self.communicator.onPlayerReload.emit()
+
+        self.communicator.showWindow.emit()
+        self.communicator.resetHideTimer.emit()
+
+        if not self.window.properties or self.window.is_animation_started:
             return
 
-        if str(key) == '<269025046>':
+        if key == 'prev':
             self.window.player_interface.Previous()
-        elif str(key) == '<269025047>':
+        elif key == 'next':
             self.window.player_interface.Next()
-        elif str(key) == '<269025044>':
+        elif key == 'play_pause':
             self.window.player_interface.PlayPause()
 
     def select_first_whitelisted_player(self, player_info: list) -> MusicOverlay.dbus_helper.PlayerInfo:

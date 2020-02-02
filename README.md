@@ -19,20 +19,36 @@ Only you decide which media players to whitelist and which are not.
 ## Configuration
    After installation in hidden folder .config located in your home folder 
    you can find configuration file called music-overlay-config.
-
+   
+   It has several parameters:
+   
+   #### App 
    Parameter players_whitelist uses dbus player names. To get one for your application start music player and use:
 
       dbus-send --session --dest=org.freedesktop.DBus --type=method_call --print-reply          
       /org/freedesktop/DBus org.freedesktop.DBus.ListNames | grep org.mpris.MediaPlayer2
    Result will show dbus names for running players where you can find the one you need.
    
-   <b>Parameter enable_media_buttons_actions does not override system media shortcuts</b>. So either set it to false or remove system shortcuts.
+   #### Shortcuts
+   Shortcut parameters allow you to define your own key combination to control player.
+   By default the have only key codes for media button. New combinations can be written as a string
+   with '+' delimiter and no spaces between keys. Example: 'alt_r+f7'. 
+   
+   Keys like 'shift' and 'alt' and 'ctrl'
+   which can be either left or right should be writen as '*key name*' for left key
+   and '*key name*_r' for the right one. So, for example, if you need to use right shift just write 'shift_r'
+   
+   #### Window
+   With window parameters you can set horizontal and vertical offsets
+   as well as window opacity. If your system does not support
+   translucent windows, opacity parameter will be ignored.
    
 ## Usage
    Just open terminal and write command music-overlay to show overlay.
-   It's easier to add command to autostart.<br>
+   It's easier to add command to autostart.
+   
    Overlay with playing track is being shown 
-   only when you press media buttons(previous, next, play/pause) 
+   only when you press one of defined shortcuts.
    
 ## Known bugs
 1. KDE: cannot show player over full screen windows

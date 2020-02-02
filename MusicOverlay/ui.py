@@ -3,7 +3,7 @@ from threading import Thread
 
 import dbus.mainloop.glib
 from PySide2 import QtCore
-from PySide2.QtCore import Qt, QEvent, QEasingCurve, QRect, QPoint, QSize, QDir
+from PySide2.QtCore import Qt, QEvent, QEasingCurve, QRect, QPoint, QSize, QResource, QDir
 from PySide2.QtGui import QPixmap, QFontMetrics
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QDialog, QSlider, QLabel, QPushButton
@@ -20,8 +20,7 @@ def set_elided_text(label: QLabel, text: str):
 class Ui(QDialog):
     def __init__(self, application):
         super(Ui, self).__init__()
-        QDir().setCurrent(str(Path(__file__).parent.parent))
-        QUiLoader().load("Resources/layout.ui", self)
+        QUiLoader().load(":/layout.ui", self)
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         self.application = application
 
@@ -138,8 +137,13 @@ class Ui(QDialog):
     def load_album_cover(self, art_url: str):
         try:
             pixmap = QPixmap()
-            result = request.urlopen(art_url).read()
-            pixmap.loadFromData(result)
+
+            if art_url.startswith(':/'):
+                pixmap.load(art_url)
+            else:
+                result = request.urlopen(art_url).read()
+                pixmap.loadFromData(result)
+
             self.album_cover.setPixmap(pixmap)
             self.album_cover_loaded = True
         except Exception:
@@ -160,9 +164,9 @@ class Ui(QDialog):
         pixmap = QPixmap()
 
         if playback_status == 'Playing':
-            pixmap.load('Resources/Images/pause.png')
+            pixmap.load(':/Images/pause.png')
         else:
-            pixmap.load('Resources/Images/play.png')
+            pixmap.load(':/Images/play.png')
 
         self.pause_btn.setIcon(pixmap)
 

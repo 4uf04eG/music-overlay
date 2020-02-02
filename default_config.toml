@@ -1,6 +1,10 @@
 [app]
 players_whitelist = ['deezer', 'spotify', 'MellowPlayer3', 'GnomeMusic']
-enable_media_buttons_actions = true
+
+[shortcuts]
+previous_keys = ['<269025046>']
+next_keys = ['<269025047>']
+play_pause_keys = ['<269025044>']
 
 [window]
 pos_x = 120

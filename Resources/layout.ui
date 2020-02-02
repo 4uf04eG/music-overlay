@@ -1222,9 +1222,9 @@ QPushButton:hover
     <string/>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>Resources/Images/prev.png</normaloff>
-     <disabledoff>Resources/Images/prev_disabled.png</disabledoff>Resources/Images/prev.png</iconset>
+    <iconset resource="resources.qrc">
+     <normaloff>:/Images/prev.png</normaloff>
+     <disabledoff>:/Images/prev_disabled.png</disabledoff>:/Images/prev.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -1270,8 +1270,8 @@ QPushButton:hover
     <string/>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>Resources/Images/pause.png</normaloff>Resources/Images/pause.png</iconset>
+    <iconset resource="resources.qrc">
+     <normaloff>:/Images/pause.png</normaloff>:/Images/pause.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -1317,9 +1317,9 @@ QPushButton:hover
     <string/>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>Resources/Images/next.png</normaloff>
-     <disabledoff>Resources/Images/next_disabled.png</disabledoff>Resources/Images/next.png</iconset>
+    <iconset resource="resources.qrc">
+     <normaloff>:/Images/next.png</normaloff>
+     <disabledoff>:/Images/next_disabled.png</disabledoff>:/Images/next.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -1335,6 +1335,8 @@ QPushButton:hover
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>
