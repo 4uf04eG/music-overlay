@@ -10,7 +10,5 @@ setup(name='music-overlay',
       packages=['MusicOverlay'],
       install_requires=['PySide2', 'pynput', 'toml'],
       license=open('LICENSE').read(),
-      entry_points={
-            'gui_scripts': ["music-overlay = MusicOverlay.__main__:run"]
-      }
+      entry_points={'gui_scripts': ["music-overlay = MusicOverlay.__main__:run"]}
 )

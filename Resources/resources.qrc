@@ -1,6 +1,7 @@
 <RCC>
   <qresource>
-    <file>layout.ui</file>
+    <file>layout_full.ui</file>
+    <file>layout_mini.ui</file>
   </qresource>
   <qresource>
     <file>Images/prev_disabled.png</file>

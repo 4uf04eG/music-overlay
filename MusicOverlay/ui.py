@@ -3,12 +3,13 @@ from threading import Thread
 
 import dbus.mainloop.glib
 from PySide2 import QtCore
-from PySide2.QtCore import Qt, QEvent, QEasingCurve, QRect, QPoint, QSize, QResource, QDir
+from PySide2.QtCore import Qt, QEvent, QEasingCurve, QRect, QPoint, QSize
 from PySide2.QtGui import QPixmap, QFontMetrics
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QDialog, QSlider, QLabel, QPushButton
 
 from MusicOverlay.dbus_helper import *
+from MusicOverlay import Layout
 
 
 def set_elided_text(label: QLabel, text: str):
@@ -20,9 +21,13 @@ def set_elided_text(label: QLabel, text: str):
 class Ui(QDialog):
     def __init__(self, application):
         super(Ui, self).__init__()
-        QUiLoader().load(":/layout.ui", self)
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         self.application = application
+
+        if application.window_layout == Layout.MINI:
+            QUiLoader().load(":/layout_mini.ui", self)
+        else:
+            QUiLoader().load(":/layout_full.ui", self)
 
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Dialog | Qt.Tool)
@@ -182,21 +187,23 @@ class Ui(QDialog):
 
     def show_hide_with_animation(self, action: QEvent):
         if self.is_animation_started:
-            return
+            self.show_hide_animation.stop()
+            action = QEvent.Show
 
+        current_geometry = QRect(self.geometry())
         end_top_left_corner = QPoint(self.pos() + QPoint(0, self.height()))
         final_geometry = QRect(end_top_left_corner, QSize(self.width(), 0))
 
         if action == QEvent.Hide:
             self.is_animation_started = True
             self.show_hide_animation.setDuration(500)
-            self.show_hide_animation.setStartValue(self.saved_geometry)
+            self.show_hide_animation.setStartValue(current_geometry)
             self.show_hide_animation.setEndValue(final_geometry)
             self.show_hide_animation.start()
-        elif action == QEvent.Show and self.isHidden():
+        elif action == QEvent.Show:
             self.is_animation_started = True
             self.show_hide_animation.setDuration(250)
-            self.show_hide_animation.setStartValue(final_geometry)
+            self.show_hide_animation.setStartValue(current_geometry)
             self.show_hide_animation.setEndValue(self.saved_geometry)
             self.show_hide_animation.start()
             self.show()

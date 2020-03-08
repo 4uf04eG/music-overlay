@@ -1,5 +1,6 @@
 # Music overlay
-<img src='https://i.ibb.co/XYRsc3N/screenshot.png'><br>
+<img src='https://i.ibb.co/XYRsc3N/screenshot.png'>
+<img src='https://i.ibb.co/f0wvRTG/Untitled.png'><br>
 Small music overlay heavily inspired by the overlay available in Windows 10.
 It serves the same functionality and has two primary goals:<br>
     1. Bring that functionality to Linux<br>
@@ -42,6 +43,8 @@ Only you decide which media players to whitelist and which are not.
    With window parameters you can set horizontal and vertical offsets
    as well as window opacity. If your system does not support
    translucent windows, opacity parameter will be ignored.
+   
+   You can change layout type there also. To select minimized layout type 'mini'.
    
 ## Usage
    Just open terminal and write command music-overlay to show overlay.

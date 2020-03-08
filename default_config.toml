@@ -10,4 +10,5 @@ play_pause_keys = ['<269025044>']
 pos_x = 120
 pos_y = 70
 opacity = 0.8
+layout = 'full'
 

@@ -1,9 +1,10 @@
+from enum import Enum
 from pathlib import Path
 
 import toml
 from PySide2.QtCore import Signal, QObject, QRect
 from PySide2.QtWidgets import QApplication
-from pynput.keyboard import Listener, KeyCode
+from pynput.keyboard import Listener
 
 import MusicOverlay
 
@@ -25,18 +26,24 @@ class Communicator(QObject):
     onPlayerReload = Signal()
 
 
+class Layout(Enum):
+    FULL = 1,
+    MINI = 2
+
+
 class Application(QApplication):
     def __init__(self):
         super().__init__()
 
         self.whitelist = ['deezer', 'spotify', 'MellowPlayer3']
-        self.previous_shortcuts = ['<269025046>']
-        self.next_shortcuts = ['<269025047>']
-        self.play_pause_shortcuts = ['<269025044>']
+        self.previous_shortcuts = [['<269025046>']]
+        self.next_shortcuts = [['<269025047>']]
+        self.play_pause_shortcuts = [['<269025044>']]
         self.all_shortcuts = self.previous_shortcuts + self.next_shortcuts + self.play_pause_shortcuts
         self.window_opacity = 0.8
         self.window_pos_x = 120
         self.window_pos_y = 70
+        self.window_layout = Layout.FULL
         self.load_config()
 
         self.communicator = Communicator()
@@ -62,7 +69,10 @@ class Application(QApplication):
             self.window_pos_x = config['window']['pos_x']
             self.window_pos_y = config['window']['pos_y']
             self.window_opacity = config['window']['opacity']
-        except (toml.decoder.TomlDecodeError, FileNotFoundError):
+
+            if config['window']['layout'] == 'mini':
+                self.window_layout = Layout.MINI
+        except (toml.TomlDecodeError, FileNotFoundError):
             pass
 
     def on_key_press(self, key):
@@ -88,11 +98,11 @@ class Application(QApplication):
         if not self.window.properties:
             self.communicator.onPlayerReload.emit()
 
+        if not self.window.properties:  # If no suitable player found
+            return
+
         self.communicator.showWindow.emit()
         self.communicator.resetHideTimer.emit()
-
-        if not self.window.properties or self.window.is_animation_started:
-            return
 
         if key == 'prev':
             self.window.player_interface.Previous()
