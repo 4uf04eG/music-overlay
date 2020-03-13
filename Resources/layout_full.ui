@@ -518,9 +518,9 @@
   <widget class="QSlider" name="volume">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>25</x>
      <y>20</y>
-     <width>31</width>
+     <width>21</width>
      <height>76</height>
     </rect>
    </property>
@@ -971,6 +971,9 @@
    </property>
    <property name="focusPolicy">
     <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
    </property>
    <property name="autoFillBackground">
     <bool>false</bool>

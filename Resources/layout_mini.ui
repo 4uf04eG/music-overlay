@@ -518,9 +518,9 @@
   <widget class="QSlider" name="volume">
    <property name="geometry">
     <rect>
-     <x>6</x>
+     <x>14</x>
      <y>10</y>
-     <width>31</width>
+     <width>16</width>
      <height>50</height>
     </rect>
    </property>

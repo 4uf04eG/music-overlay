@@ -2,7 +2,7 @@ from enum import Enum
 from pathlib import Path
 
 import toml
-from PySide2.QtCore import Signal, QObject, QRect
+from PySide2.QtCore import Signal, QObject, QRect, QWaitCondition, QMutex
 from PySide2.QtWidgets import QApplication
 from pynput.keyboard import Listener
 
@@ -24,6 +24,8 @@ class Communicator(QObject):
     resetHideTimer = Signal()
     showWindow = Signal()
     onPlayerReload = Signal()
+    mutex = QMutex()
+    waitCondition = QWaitCondition()
 
 
 class Layout(Enum):
@@ -55,6 +57,7 @@ class Application(QApplication):
         self.load_any_player()
         self.window.show()
         self.window.saved_geometry = QRect(self.window.geometry())
+        self.window.hide()
 
     def load_config(self):
         try:
@@ -97,6 +100,9 @@ class Application(QApplication):
     def handle_media_buttons_press(self, key: str):
         if not self.window.properties:
             self.communicator.onPlayerReload.emit()
+            self.communicator.mutex.lock()
+            self.communicator.waitCondition.wait(self.communicator.mutex)
+            self.communicator.mutex.unlock()
 
         if not self.window.properties:  # If no suitable player found
             return
@@ -124,3 +130,4 @@ class Application(QApplication):
         all_players = MusicOverlay.dbus_helper.get_all_players_info()
         whitelisted_player = self.select_first_whitelisted_player(all_players)
         self.window.set_player_info(whitelisted_player)
+        self.communicator.waitCondition.wakeAll()

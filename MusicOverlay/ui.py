@@ -1,3 +1,4 @@
+import signal
 import urllib.request as request
 from threading import Thread
 
@@ -8,8 +9,8 @@ from PySide2.QtGui import QPixmap, QFontMetrics
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QDialog, QSlider, QLabel, QPushButton
 
-from MusicOverlay.dbus_helper import *
 from MusicOverlay import Layout
+from MusicOverlay.dbus_helper import *
 
 
 def set_elided_text(label: QLabel, text: str):
@@ -22,6 +23,7 @@ class Ui(QDialog):
     def __init__(self, application):
         super(Ui, self).__init__()
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
         self.application = application
 
         if application.window_layout == Layout.MINI:
@@ -221,7 +223,6 @@ class Ui(QDialog):
             self.killTimer(self.hide_timer_id)
             self.hide_timer_id = -1
             self.show_hide_with_animation(QEvent.Hide)
-
         elif event.timerId() == self.slider_timer_id:
             self.killTimer(self.slider_timer_id)
             self.slider_timer_id = -1
