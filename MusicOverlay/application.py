@@ -101,7 +101,7 @@ class Application(QApplication):
         if not self.window.properties:
             self.communicator.onPlayerReload.emit()
             self.communicator.mutex.lock()
-            self.communicator.waitCondition.wait(self.communicator.mutex)
+            self.communicator.waitCondition.wait(self.communicator.mutex, 5000)
             self.communicator.mutex.unlock()
 
         if not self.window.properties:  # If no suitable player found
