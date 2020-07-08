@@ -27,7 +27,7 @@ Only you decide which media players to whitelist and which are not.
    #### App 
    Parameter players_whitelist uses dbus player names. To get one for your application start music player and use:
 
-      dbus-send --session --dest=org.freedesktop.DBus --type=method_call --print-reply          
+      dbus-send --session --dest=org.freedesktop.DBus --type=method_call --print-reply \
       /org/freedesktop/DBus org.freedesktop.DBus.ListNames | grep org.mpris.MediaPlayer2
    Result will show dbus names for running players where you can find the one you need.
    
