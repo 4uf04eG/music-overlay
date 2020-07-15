@@ -28,6 +28,7 @@ class PlayerInfo:
                 self.artist = ' & '.join(metadata['xesam:artist'])
         if 'mpris:artUrl' in metadata:
             self.art_url = str(metadata['mpris:artUrl'])
+            self.art_url = self.art_url.replace("open.spotify.com/image", "i.scdn.co/image")
 
         self.service_name = str(service)
         self.playback_status = str(playback_status)
