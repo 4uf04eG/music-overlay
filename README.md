@@ -15,7 +15,7 @@ Only you decide which media players to whitelist and which are not.
     # Install python and python-setuptools if required
     git clone https://github.com/4uf04eG/music-overlay.git
     cd music-overlay
-    sudo python setup.py install
+    sudo python3 setup.py install
     cp -n default_config.toml $HOME/.config/music-overlay-config
     
 ## Configuration
