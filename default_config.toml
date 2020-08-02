@@ -1,5 +1,6 @@
 [app]
 players_whitelist = ['deezer', 'spotify', 'MellowPlayer3', 'GnomeMusic']
+debug_mode = false
 
 [shortcuts]
 previous_keys = ['<269025046>']

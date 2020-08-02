@@ -38,10 +38,13 @@ class Application(QApplication):
         super().__init__()
 
         self.whitelist = ['deezer', 'spotify', 'MellowPlayer3']
+        self.debug_mode = False
+
         self.previous_shortcuts = [['<269025046>']]
         self.next_shortcuts = [['<269025047>']]
         self.play_pause_shortcuts = [['<269025044>']]
         self.all_shortcuts = self.previous_shortcuts + self.next_shortcuts + self.play_pause_shortcuts
+
         self.window_opacity = 0.8
         self.window_pos_x = 120
         self.window_pos_y = 70
@@ -63,6 +66,7 @@ class Application(QApplication):
         try:
             config = toml.load(f"{Path.home()}/.config/music-overlay-config")
             self.whitelist = config['app']['players_whitelist']
+            self.debug_mode = config['app']['debug_mode']
 
             self.previous_shortcuts = [key.split('+') for key in config['shortcuts']['previous_keys']]
             self.next_shortcuts = [key.split('+') for key in config['shortcuts']['next_keys']]
@@ -81,15 +85,21 @@ class Application(QApplication):
     def on_key_press(self, key):
         cleared_name = str(key).replace('Key.', '').replace('\'', '')
 
+        if self.debug_mode:
+            print(f"Pressed key: {cleared_name}")
+
         if any([cleared_name in COMBO for COMBO in self.all_shortcuts]):
             self.current_keys_pressed.add(cleared_name)
 
-            if any(all(k in self.current_keys_pressed for k in COMBO) for COMBO in self.next_shortcuts):
+            if any(self.are_pressed_keys_match_shortcut(COMBO) for COMBO in self.next_shortcuts):
                 self.handle_media_buttons_press("next")
-            elif any(all(k in self.current_keys_pressed for k in COMBO) for COMBO in self.previous_shortcuts):
+            elif any(self.are_pressed_keys_match_shortcut(COMBO) for COMBO in self.previous_shortcuts):
                 self.handle_media_buttons_press("prev")
-            elif any(all(k in self.current_keys_pressed for k in COMBO) for COMBO in self.play_pause_shortcuts):
+            elif any(self.are_pressed_keys_match_shortcut(COMBO) for COMBO in self.play_pause_shortcuts):
                 self.handle_media_buttons_press("play_pause")
+
+    def are_pressed_keys_match_shortcut(self, combo):
+        return all(k in self.current_keys_pressed for k in combo) and len(self.current_keys_pressed) == len(combo)
 
     def on_key_release(self, key):
         cleared_name = str(key).replace('Key.', '')

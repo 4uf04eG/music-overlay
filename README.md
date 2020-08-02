@@ -31,6 +31,8 @@ Only you decide which media players to whitelist and which are not.
       /org/freedesktop/DBus org.freedesktop.DBus.ListNames | grep org.mpris.MediaPlayer2
    Result will show dbus names for running players where you can find the one you need.
    
+   Parameter debug_mode helps you get pressed key name. It can be very useful for getting media keys keycodes.
+   
    #### Shortcuts
    Shortcut parameters allow you to define your own key combination to control player.
    By default the have only key codes for media button. New combinations can be written as a string
@@ -39,6 +41,8 @@ Only you decide which media players to whitelist and which are not.
    Keys like 'shift' and 'alt' and 'ctrl'
    which can be either left or right should be writen as '*key name*' for left key
    and '*key name*_r' for the right one. So, for example, if you need to use right shift just write 'shift_r'
+   
+   If you have problem with key recognition, use debug_mode to see pressed key.
    
    #### Window
    With window parameters you can set horizontal and vertical offsets

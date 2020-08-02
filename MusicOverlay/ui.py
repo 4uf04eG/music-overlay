@@ -13,10 +13,9 @@ from MusicOverlay import Layout
 from MusicOverlay.dbus_helper import *
 
 
-def set_elided_text(label: QLabel, text: str):
+def elide_text(label: QLabel, text: str):
     metrics = QFontMetrics(label.font())
-    clipped_text = metrics.elidedText(text, Qt.ElideRight, label.width())
-    label.setText(clipped_text)
+    return metrics.elidedText(text, Qt.ElideRight, label.width())
 
 
 class Ui(QDialog):
@@ -63,7 +62,8 @@ class Ui(QDialog):
         self.application.communicator.resetHideTimer.connect(self.reset_hide_timer)
 
         self.long_load_timer_id = -1
-        self.album_cover_loaded = False
+        self.is_album_cover_loaded = False
+        self.latest_cover_url = ""
 
         self.show_hide_animation = QtCore.QPropertyAnimation(self, b"geometry")
         self.show_hide_animation.setEasingCurve(QEasingCurve.InOutQuad)
@@ -117,10 +117,20 @@ class Ui(QDialog):
     """
 
     def set_player_info(self, info: PlayerInfo):
-        set_elided_text(self.track_title_label, info.track_title)
-        set_elided_text(self.artist_label, info.artist)
+        new_title = elide_text(self.track_title_label, info.track_title)
+        new_artist = elide_text(self.artist_label, info.artist)
+
+        if self.track_title_label.text() == new_title and \
+                new_artist == self.artist_label.text() and \
+                self.latest_cover_url == info.art_url:
+            return
+
+        self.track_title_label.setText(elide_text(self.track_title_label, info.track_title))
+        self.artist_label.setText(elide_text(self.artist_label, info.artist))
+        self.latest_cover_url = info.art_url
+
         self.volume_slider.setValue(info.volume * 100)
-        self.album_cover_loaded = False
+        self.is_album_cover_loaded = False
 
         if not self.player_interface and info.service_name:
             self.set_up_player(create_dbus_object(info.service_name))
@@ -139,7 +149,9 @@ class Ui(QDialog):
                 self.next_btn.setEnabled(True)
 
         self.long_load_timer_id = self.startTimer(50)
-        Thread(target=self.load_album_cover, args=[info.art_url]).start()
+
+        thread = Thread(target=self.load_album_cover, args=[info.art_url])
+        thread.join(50) if thread.is_alive() else thread.start()
 
     def load_album_cover(self, art_url: str):
         try:
@@ -151,8 +163,13 @@ class Ui(QDialog):
                 result = request.urlopen(art_url).read()
                 pixmap.loadFromData(result)
 
+            # Clearing thread queue to load only latest cover
+            if self.latest_cover_url != art_url:
+                self.album_cover.setText('LOADING')
+                return
+
             self.album_cover.setPixmap(pixmap)
-            self.album_cover_loaded = True
+            self.is_album_cover_loaded = True
         except Exception:
             pass
 
@@ -233,7 +250,7 @@ class Ui(QDialog):
             self.killTimer(self.long_load_timer_id)
             self.long_load_timer_id = -1
 
-            if not self.album_cover_loaded:
+            if not self.is_album_cover_loaded:
                 self.album_cover.setText('LOADING')
 
     """
