@@ -35,7 +35,7 @@ Only you decide which media players to whitelist and which are not.
    
    #### Shortcuts
    Shortcut parameters allow you to define your own key combination to control player.
-   By default the have only key codes for media button. New combinations can be written as a string
+   By default they have only key codes for media button. New combinations can be written as a string
    with '+' delimiter and no spaces between keys. Example: 'alt_r+f7'. 
    
    Keys like 'shift' and 'alt' and 'ctrl'
